@@ -17,7 +17,6 @@ var minSubArrayLen = function(target, nums) {
           lengthSubArray = lengthSubArray !== 0 ? 
             Math.min(lengthSubArray, (i - windowStart) + 1) :
             (i - windowStart) + 1
-        
           totalSum -= nums[windowStart++];
       }
     }
