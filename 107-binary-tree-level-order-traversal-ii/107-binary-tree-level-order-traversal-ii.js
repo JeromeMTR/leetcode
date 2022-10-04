@@ -30,11 +30,11 @@ var levelOrderBottom = function(root) {
       levelVals.push(node.val);
       
       // check if there is a right on node and left on node
-      if (node.left !== null) { 
+      if (node.left) { 
         // push node in queue
         queue.push(node.left);
       }
-      if (node.right !== null) {
+      if (node.right) {
         queue.push(node.right);
       }
     }
