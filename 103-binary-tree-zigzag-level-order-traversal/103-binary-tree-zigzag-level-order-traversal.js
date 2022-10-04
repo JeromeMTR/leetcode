@@ -16,34 +16,69 @@ var zigzagLevelOrder = function(root) {
   // c = most optimal solution possible
   // e = return empty array if root is null
   
-  if (!root) return [];
+//   if (!root) return [];
   
-  // keep track of results
-  // keep track of current node
-  // declare an array to make it function like a queue
-  let node = root,
-      results = [],
-      queue = [root];
+//   // keep track of results
+//   // keep track of current node
+//   // declare an array to make it function like a queue
+//   let node = root,
+//       results = [],
+//       queue = [root];
   
-  // keep traversing while there is something inside the queue
-  while (queue.length) {
-    // keep track of current levels value
-    // check length of results
-    const levelVals = [],
-          length = queue.length,
-          isOdd = results.length % 2 === 1; 
+//   // keep traversing while there is something inside the queue
+//   while (queue.length) {
+//     // keep track of current levels value
+//     // check length of results
+//     const levelVals = [],
+//           length = queue.length,
+//           isOdd = results.length % 2 === 1; 
       
-    for (let i = 0; i < length; i++) {
-      node = queue.shift();
-      // push or unshift val into levelVals depending on odd
-      isOdd ? levelVals.unshift(node.val) : levelVals.push(node.val);
+//     for (let i = 0; i < length; i++) {
+//       node = queue.shift();
+//       // push or unshift val into levelVals depending on odd
+//       isOdd ? levelVals.unshift(node.val) : levelVals.push(node.val);
       
-      if (node.left) queue.push(node.left);
-      if (node.right) queue.push(node.right);
-    }
-    // push levelVals array into results
-    results.push(levelVals)
+//       if (node.left) queue.push(node.left);
+//       if (node.right) queue.push(node.right);
+//     }
+//     // push levelVals array into results
+//     results.push(levelVals)
+//   }
+//   // return results
+//   return results;
+    result = [];
+  if (root === null) {
+    return result;
   }
-  // return results
-  return results;
+
+  const queue = [];
+  queue.push(root);
+  leftToRight = true;
+  while (queue.length > 0) {
+    levelSize = queue.length;
+    currentLevel = [];
+    for (i = 0; i < levelSize; i++) {
+      currentNode = queue.shift();
+
+      // add the node to the current level based on the traverse direction
+      if (leftToRight) {
+        currentLevel.push(currentNode.val);
+      } else {
+        currentLevel.unshift(currentNode.val);
+      }
+
+      // insert the children of current node in the queue
+      if (currentNode.left !== null) {
+        queue.push(currentNode.left);
+      }
+      if (currentNode.right !== null) {
+        queue.push(currentNode.right);
+      }
+    }
+    result.push(currentLevel);
+    // reverse the traversal direction
+    leftToRight = !leftToRight;
+  }
+
+  return result;
 };
