@@ -31,6 +31,8 @@ var levelOrder = function(root) {
     for (i = 0; i < levelSize; i++) {
       currentNode = queue.shift(),
             { left, right } = currentNode || {};
+      
+      // push current nodes val to level array
       currentLevel.push(currentNode.val);
       if (left) {
       // push node to queue
