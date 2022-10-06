@@ -69,5 +69,4 @@ var twoSum = function(nums, target) {
     i++;
   }
   return result;
-    
 };
