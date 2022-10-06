@@ -55,9 +55,7 @@ var twoSum = function(nums, target) {
 //     // assign a key in obj with current num and value of index
 //     obj[currentNum] = i;
 //   }
-  
-  // faster solution //
-  
+    
   while(result.length < 2) {
     let currentNum = nums[i];
     // check if target - nums[num] does not return false
