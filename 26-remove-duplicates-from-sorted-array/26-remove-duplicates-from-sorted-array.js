@@ -8,7 +8,6 @@ var removeDuplicates = function(nums) {
   // c = sorted array, try to solve first and then optimize
   // e = if array length is less than 1 return [] array
   
-  
   let i = 0,
       nonDup = 1;
   
