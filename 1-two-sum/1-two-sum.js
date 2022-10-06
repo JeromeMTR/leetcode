@@ -56,6 +56,7 @@ var twoSum = function(nums, target) {
 //     obj[currentNum] = i;
 //   }
     
+  
   while(result.length < 2) {
     let currentNum = nums[i];
     // check if target - nums[num] does not return false
