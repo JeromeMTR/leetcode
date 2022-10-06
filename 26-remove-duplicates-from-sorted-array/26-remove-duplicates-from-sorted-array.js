@@ -10,8 +10,7 @@ var removeDuplicates = function(nums) {
   
   
   let i = 0,
-      nonDup = 1,
-      results = [];
+      nonDup = 1;
   
   while (i < nums.length) {
     // check if prev index of non dup matches current index
@@ -20,7 +19,6 @@ var removeDuplicates = function(nums) {
       nums[nonDup] = nums[i];
       // increment nonDup
       nonDup++;
-      results.push(nums[nonDup - 1]);
     }
     
     // increase i count to eventually stop loop
