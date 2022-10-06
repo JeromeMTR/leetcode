@@ -39,19 +39,35 @@ var twoSum = function(nums, target) {
   // NOT SORTED
   
   // declare a obj var to keep track of numbers
-  let obj = {};
+  let obj = {},
+      result = [],
+      i = 0;
   // loop through array
-  for (let i = 0; i < nums.length; i++) {
-    // declare and assign num to equal current element
+//   for (let i = 0; i < nums.length; i++) {
+//     // declare and assign num to equal current element
+//     let currentNum = nums[i];
+//     // check if target - nums[num] does not return false
+
+//     if (target - currentNum in obj) {
+//       // return target - current num in obj and index in array
+//       return [obj[target - currentNum], i];
+//     }
+//     // assign a key in obj with current num and value of index
+//     obj[currentNum] = i;
+//   }
+  
+  while(result.length < 2) {
     let currentNum = nums[i];
     // check if target - nums[num] does not return false
 
     if (target - currentNum in obj) {
       // return target - current num in obj and index in array
-      return [obj[target - currentNum], i];
+      result.push(obj[target - currentNum], i);
     }
     // assign a key in obj with current num and value of index
     obj[currentNum] = i;
+    i++;
   }
+  return result;
     
 };
