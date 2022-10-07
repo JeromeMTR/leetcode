@@ -15,7 +15,6 @@ var hasCycle = function(head) {
   // o = true or false depending on cycle or not
   // c = try to solve brute force and then find optimiztions
   // e = if head or head nodes next is null return false
-  
   if (!head || !head.next) return false;
     
   let fast = head,
