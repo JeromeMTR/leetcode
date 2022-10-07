@@ -14,7 +14,7 @@ var hasCycle = function(head) {
   // i = head node of linked list
   // o = true or false depending on cycle or not
   // c = try to solve brute force and then find optimiztions
-  // e = if head nodes next is null return false
+  // e = if head or head nodes next is null return false
   
   if (!head || !head.next) return false;
     
