@@ -15,8 +15,6 @@ var isHappy = function(n) {
   // keep looping until trail is equal 1
   while (trail !== 1) {
     // loop through trail and sum
-    const trailSum = 0,
-          scoutSum = 0;
     scout = splitSquareSum(scout);
     scout = splitSquareSum(scout);
     trail = splitSquareSum(trail);
