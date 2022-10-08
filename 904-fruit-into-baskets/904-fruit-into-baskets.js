@@ -24,7 +24,7 @@ var totalFruit = function(fruits) {
     // while obj length is greater than 2 
     while(Object.keys(fruitsObj).length > 2) {     
       // decrement count of in obj of property start point
-      fruitsObj[fruits[start]] -= 1;
+      fruitsObj[fruits[start]]--;
       // if current that fruit in obj is 0, delete it
       if (fruitsObj[fruits[start]] === 0) {
         delete fruitsObj[fruits[start]];
