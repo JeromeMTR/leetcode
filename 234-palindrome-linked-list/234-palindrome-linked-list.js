@@ -38,4 +38,19 @@ var isPalindrome = function(head) {
   }
   // return true if loop breaks
   return true;
+  
+  // declare a fast and slow reference
+  // let slow = head,
+  //     fast = head;
+  // // find middle of linked list
+  // while (fast && fast.next) {
+  //   slow = slow.next;
+  //   fast = fast.next.next;
+  // }
+  // reverse second half
+  
+  // compare first half and second half to see if it is a palindrom
+  
+  // reverse second half again to revert linked list
+  
 };
