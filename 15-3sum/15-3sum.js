@@ -42,9 +42,6 @@ const twoSumTarget = (array, front, target, result) => {
       while (front < back && array[front] === array[front - 1]) {
         front++;
       }
-      while (front < back && array[back] === array[back + 1]) {
-        front++;
-      }
       
     } else if (totalSum < target) {
       front++;
