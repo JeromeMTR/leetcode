@@ -12,7 +12,7 @@ var removeElement = function(nums, val) {
   // keep track of indexes that have 2
   // keep track of cur index
   let tracker = {};
-  let curInd = 0; 
+  let swapCount = 0; 
   
   // loop through array
   for (let i = 0; i < nums.length; i++) {
@@ -20,6 +20,7 @@ var removeElement = function(nums, val) {
     let curVal = nums[i];
     if (curVal === val) {
       tracker[i] = 1;
+      swapCount++;
       continue;
     }
     // swap with first index in tracker
@@ -32,7 +33,5 @@ var removeElement = function(nums, val) {
     }
   }
   
-  for (let i = 0; i < nums.length; i++) {
-    if (nums[i] === val) return nums.slice(0, i).length;
-  }
+  return swapCount > 0 ? nums.slice(0, -swapCount).length : nums.length
 };
