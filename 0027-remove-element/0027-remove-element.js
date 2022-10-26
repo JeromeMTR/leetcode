@@ -33,5 +33,6 @@ var removeElement = function(nums, val) {
     }
   }
   // faster time complexity
+  
   return swapCount > 0 ? nums.slice(0, -swapCount).length : nums.length
 };
