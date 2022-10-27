@@ -20,7 +20,6 @@ var getTargetCopy = function(original, cloned, target) {
   if (!original.left & !original.right) return cloned;
   
   const queue = [cloned];
-  let ref;
   
   while (queue.length > 0) {
     let curNode = queue.shift();
