@@ -12,6 +12,5 @@ var lengthOfLastWord = function(s) {
   let splitS = s.split(' ');
   console.log(splitS);
   let filter = splitS.filter(word => word);
-  console.log(filter);
   return filter[filter.length - 1].length;
 };
