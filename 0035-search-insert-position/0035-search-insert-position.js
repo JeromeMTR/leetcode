@@ -22,7 +22,6 @@ var searchInsert = function(nums, target) {
       halfCount--;
     }
   }
-  console.log(halfCount);
   if (target < nums[halfCount] && halfCount === 0) return 0;
   if (halfCount === - 1) return 0;
   if (target > nums[halfCount]) return halfCount + 1;
