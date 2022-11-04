@@ -7,6 +7,7 @@ var reverseVowels = function(s) {
     let sArr = s.split('');
     let left = 0,
         right = sArr.length - 1;
+  
     while (left < right) {
         if (vowels.includes(sArr[left].toLowerCase()) && vowels.includes(sArr[right].toLowerCase())) {
             let temp = sArr[left];
@@ -27,6 +28,5 @@ var reverseVowels = function(s) {
         left++;
         right--;
     }
-
     return sArr.join('');
 };
