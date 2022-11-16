@@ -12,24 +12,14 @@
  * @return {number}
  */
 var guessNumber = function(n) {
-  let res = guess(n);
-  
-  if (res === -1) {
-    while (res === -1) {
-      n -= Math.floor(n / 2);
-      res = guess(n);
+  var start = 1;
+    var end = n;   
+    while(start <= end){
+        var num = Math.ceil(start + (end - start)/2);
+        var ask = guess(num);
+        if(ask == 0) return num;
+        else if(ask == -1) end = num - 1;
+        else if(ask == 1) start = num + 1;
     }
-  } else {
-    while (res === 1) {
-      n += Math.floor(n / 2); 
-      res = guess(n);
-    }
-  }
-  
-  while (res !== 0) {
-    if (res === -1) n--;
-    if (res === 1) n++;
-    res = guess(n);
-  }
-  return n;
+    return start;
 };
