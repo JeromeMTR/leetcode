@@ -8,6 +8,7 @@ var isAnagram = function(s, t) {
   // o: true or false depending on anagram
   // c: find solution and then optimize
   // e: if they are not the same lenght return false
+  
   let anagram = true;
   if (s.length !== t.length) return false;
   
