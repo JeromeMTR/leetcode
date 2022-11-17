@@ -25,7 +25,6 @@ var isAnagram = function(s, t) {
     tMap.set(letter, (tMap.get(letter) || 0) + 1);
   }
   
-  
   // loop through hashmap
   sMap.forEach((val, key) => {
     // compare cur val and tMaps key val and return false if not the same
