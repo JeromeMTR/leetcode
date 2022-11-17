@@ -27,7 +27,6 @@ var isAnagram = function(s, t) {
   
   
   // loop through hashmap
-  console.log(sMap, tMap);
   sMap.forEach((val, key) => {
     // compare cur val and tMaps key val and return false if not the same
     if (!tMap.has(key)) anagram = false;
