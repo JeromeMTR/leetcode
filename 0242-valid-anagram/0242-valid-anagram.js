@@ -8,25 +8,32 @@ var isAnagram = function(s, t) {
   // o: true or false depending on anagram
   // c: find solution and then optimize
   // e: if they are not the same lenght return false
-  
+  let anagram = true;
   if (s.length !== t.length) return false;
   
   // instiate two maps 
   let sMap = new Map(),
       tMap = new Map();
   
+  // add all letters to hash map
   for (letter of s) {
     sMap.set(letter, (sMap.get(letter) || 0) + 1);
   }
   
+  // add all letters to hash map
   for (letter of t) {
     tMap.set(letter, (tMap.get(letter) || 0) + 1);
   }
   
-  for (letter of s) {
-    const same = tMap.get(letter) === sMap.get(letter);
-    if (!same) return false;
-  }
   
-  return true;  
+  // loop through hashmap
+  console.log(sMap, tMap);
+  sMap.forEach((val, key) => {
+    // compare cur val and tMaps key val and return false if not the same
+    console.log(tMap.has(key));
+    if (!tMap.has(key)) anagram = false;
+    if (val !== tMap.get(key)) anagram = false;
+  })
+  
+  return anagram;  
 };
