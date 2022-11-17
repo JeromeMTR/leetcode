@@ -30,7 +30,6 @@ var isAnagram = function(s, t) {
   console.log(sMap, tMap);
   sMap.forEach((val, key) => {
     // compare cur val and tMaps key val and return false if not the same
-    console.log(tMap.has(key));
     if (!tMap.has(key)) anagram = false;
     if (val !== tMap.get(key)) anagram = false;
   })
