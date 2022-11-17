@@ -23,7 +23,6 @@ var twoSum = function(nums, target) {
       // push current index and the stored index at the hash key
       resultArr.push(hash.get(curKey), i);
     }    
-    
     // add the cur val as a key in hash and the index as the value
     hash.set(curVal, i);
   }
