@@ -37,6 +37,5 @@ var topKFrequent = function(nums, k) {
       arr.push(bucket[i][j])
     }
   }
-  console.log(bucket);
   return arr
 };
