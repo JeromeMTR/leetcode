@@ -7,7 +7,7 @@ var isPalindrome = function(s) {
   // o: boolean depending on palandrome or not
   // c: time complexity of O(n) 
   // e: if string is empty return true
-  
+  if (s.length === 0) return true;
   
   let removeSym = s.replace(/[^a-zA-Z0-9s]/g, '').toLowerCase();
   
