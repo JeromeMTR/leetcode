@@ -16,11 +16,12 @@ ProductOfNumbers.prototype.add = function(num) {
  * @return {number}
  */
 ProductOfNumbers.prototype.getProduct = function(k) {
-  let product = 1;
   let lastInd = this.array.length - 1;
-  while (k >= 1) {
-    product *= this.array[lastInd];
+  let product = this.array[lastInd];
+  
+  while (k > 1) {
     lastInd--;
+    product *= this.array[lastInd];
     k--;
   }
   return product;
