@@ -3,6 +3,11 @@
  * @return {string}
  */
 var frequencySort = function(s) {
+  // i = string input
+  // o = return string in descending sorted order depending on letter count 
+  // c = solve in big O(n) complexity
+  // e = if string is empty return empty string, if string length is one return string
+  
   let sortedS = '';
   let bucket = [];
   let freq = {};
@@ -20,7 +25,6 @@ var frequencySort = function(s) {
     
     bucket[curVal].push(key);
   }
-  console.log(bucket);
   
   for (let i = bucket.length - 1; i > 0; i--) {
     let curTuple = bucket[i];
