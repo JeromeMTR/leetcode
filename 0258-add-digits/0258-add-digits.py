@@ -14,9 +14,7 @@ class Solution:
         for letter in string:
           total += int(letter)
           
-        cur_string = str(total)
-        
-        return checkSingle(cur_string)
+        return checkSingle(str(total))
       
       return checkSingle(str_num)
           
