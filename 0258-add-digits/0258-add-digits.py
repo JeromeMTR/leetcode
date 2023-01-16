@@ -11,8 +11,7 @@ class Solution:
       
         total = 0
         
-        for letter in string: 
-          print(type(int(letter)))
+        for letter in string:
           total += int(letter)
           
         cur_string = str(total)
