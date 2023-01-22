@@ -8,5 +8,10 @@ class Solution:
         if start not in nums:
           return start
         
+        if total not in nums:
+          return total
+        
+        total -= 1
         start += 1
         
+      
