@@ -7,8 +7,7 @@ class Solution:
       while start <= total:
         if start not in nums:
           return start
-        
-        if total not in nums:
+        elif total not in nums:
           return total
         
         total -= 1
