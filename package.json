@@ -1,0 +1,15 @@
+{
+  "name": "leetcode-ai",
+  "version": "1.0.0",
+  "description": "Automate solving LeetCode problems using OpenAI",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "openai": "^3.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}

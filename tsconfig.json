@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "target": "ESNext",                     // Compile to the latest ECMAScript version
+      "module": "ESNext",                     // Use the latest module system (ES Modules)
+      "strict": true,                         // Enable all strict type-checking options
+      "esModuleInterop": true,                // Allow default imports from CommonJS modules
+      "skipLibCheck": true,                   // Skip type checking of declaration files (.d.ts)
+      "forceConsistentCasingInFileNames": true, // Enforce consistent casing in file names
+      "outDir": "./dist",                     // Specify the output directory for compiled files
+      "rootDir": "./src",                     // Specify the root directory of source files
+      "resolveJsonModule": true,              // Allow importing JSON files as modules
+      "moduleResolution": "node",             // Use Node.js module resolution strategy
+      "typeRoots": ["./node_modules/@types"], // Specify directories containing type definitions
+      "lib": ["ESNext"],                      // Include the latest JavaScript features
+      "allowSyntheticDefaultImports": true    // Allow default imports for modules without default exports
+    },
+    "include": ["src/**/*"],                  // Include all TypeScript files in the src directory
+    "exclude": ["node_modules", "dist"]       // Exclude the node_modules and dist directories
+}
