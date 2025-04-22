@@ -11,7 +11,7 @@
       "resolveJsonModule": true,              // Allow importing JSON files as modules
       "moduleResolution": "node",             // Use Node.js module resolution strategy
       "typeRoots": ["./node_modules/@types"], // Specify directories containing type definitions
-      "lib": ["ESNext"],                      // Include the latest JavaScript features
+      "lib": ["ESNext", "DOM"],                      // Include the latest JavaScript features
       "allowSyntheticDefaultImports": true    // Allow default imports for modules without default exports
     },
     "include": ["src/**/*"],                  // Include all TypeScript files in the src directory
