@@ -1,36 +1,80 @@
-// Import necessary modules
-const MODULO = 1e9 + 7;
+const MOD = BigInt(1e9 + 7);
+const L = 26;
 
-/**
- * Function to calculate the length of the transformed string 
- * after `t` transformations.
- * 
- * @param s - the initial string consisting of lowercase English letters
- * @param t - number of transformations to perform
- * @param nums - array of size 26 where nums[i] represents the number of consecutive characters 
- *               each letter from the alphabet transforms to
- * @returns the length of the resulting string after `t` transformations modulo (10^9 + 7)
- */
-function transformedStringLength(s: string, t: number, nums: number[]): number {
-  // Initial length of the string
-  let currentLength = s.length;
+class Mat {
+    a: bigint[][];
 
-  // Process the string for `t` transformations
-  for (let i = 0; i < t; i++) {
-    let newLength = 0;
-    // For each character in the string, calculate the transformation length
-    for (const ch of s) {
-      const index = ch.charCodeAt(0) - 'a'.charCodeAt(0);
-      newLength += nums[index];
+    constructor(copyFrom: Mat | null = null) {
+        this.a = Array.from({ length: L }, () => new Array(L).fill(0n));
+        if (copyFrom) {
+            for (let i = 0; i < L; i++) {
+                for (let j = 0; j < L; j++) {
+                    this.a[i][j] = copyFrom.a[i][j];
+                }
+            }
+        }
     }
-    currentLength = newLength % MODULO; // Take the modulo to prevent overflow
-  }
 
-  return currentLength;
+    mul(other: Mat): Mat {
+        const result = new Mat();
+        for (let i = 0; i < L; i++) {
+            for (let j = 0; j < L; j++) {
+                for (let k = 0; k < L; k++) {
+                    result.a[i][j] =
+                        (result.a[i][j] + this.a[i][k] * other.a[k][j]) % MOD;
+                }
+            }
+        }
+        return result;
+    }
 }
 
-// Example Usage:
-const s = "abcyy";
-const t = 2;
-const nums = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2];
-console.log(transformedStringLength(s, t, nums)); // Output: 7
+/* identity matrix */
+function I(): Mat {
+    const m = new Mat();
+    for (let i = 0; i < L; i++) {
+        m.a[i][i] = 1n;
+    }
+    return m;
+}
+
+/* matrix exponentiation by squaring */
+function quickMul(x: Mat, y: number): Mat {
+    let ans = I();
+    let cur = new Mat(x);
+    while (y > 0) {
+        if (y & 1) {
+            ans = ans.mul(cur);
+        }
+        cur = cur.mul(cur);
+        y >>= 1;
+    }
+    return ans;
+}
+
+function lengthAfterTransformations(
+    s: string,
+    t: number,
+    nums: number[],
+): number {
+    const T = new Mat();
+    for (let i = 0; i < L; i++) {
+        for (let j = 1; j <= nums[i]; j++) {
+            T.a[(i + j) % L][i] = 1n;
+        }
+    }
+
+    const res = quickMul(T, t);
+    const f = new Array(L).fill(0n);
+    for (const ch of s) {
+        f[ch.charCodeAt(0) - "a".charCodeAt(0)] += 1n;
+    }
+
+    let ans = 0n;
+    for (let i = 0; i < L; i++) {
+        for (let j = 0; j < L; j++) {
+            ans = (ans + res.a[i][j] * f[j]) % MOD;
+        }
+    }
+    return Number(ans);
+}
