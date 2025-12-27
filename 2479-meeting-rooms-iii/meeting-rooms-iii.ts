@@ -1,150 +1,220 @@
-// --------- Priority Queue / Min-Heap Implementation --------
-class MinHeap<T> {
-    private heap: T[];
-    private comp: (a: T, b: T) => boolean;
+//  * @param n Number of rooms available (0-indexed identifiers: 0..n-1).
+//  * @param meetings List of meeting intervals as [start, end] pairs.
+//  * @returns Index of the most-booked room; ties resolved by smallest index.
 
-    constructor(comp: (a: T, b: T) => boolean, arr: T[] = []) {
-        this.comp = comp;
-        this.heap = arr.slice();
-        if (arr.length > 0) this.heapify();
-    }
+/**
+ * LeetCode 2402. Meeting Rooms III
+ *
+ * IOCE (Input/Output/Constraints/Edge cases):
+ * - Input: n (1..100), meetings: up to 1e5 intervals [start, end), unique starts
+ * - Output: room index that hosted the most meetings; tie -> smallest index
+ * - Constraints require O(m log n) where m = meetings.length
+ * - Edge cases:
+ *   - Multiple meetings end exactly when another starts (half-closed): room becomes free at end time
+ *   - When no room is free at a meeting's start, delay it to the earliest finishing room
+ *   - When multiple rooms free: pick lowest room index
+ *   - When multiple rooms finish at same time: after freeing, lowest index should be preferred
+ *
+ * Approach:
+ * - Sort meetings by original start time.
+ * - Maintain:
+ *   1) available rooms min-heap by room index
+ *   2) busy rooms min-heap by (endTime, roomIndex) (endTime primary, roomIndex secondary)
+ * - For each meeting:
+ *   - Free all busy rooms whose endTime <= meeting.start
+ *   - If an available room exists: schedule meeting in lowest-index room ending at meeting.end
+ *   - Else: pop earliest finishing room, delay meeting to that endTime, keep duration, push back
+ * - Count meetings per room; return argmax with tie-breaking by smallest index.
+ */
 
-    private heapify() {
-        for (let i = Math.floor(this.heap.length / 2); i >= 0; --i) {
-            this.siftDown(i);
-        }
+// Generic min-heap using a boolean comparator `less(x, y)` that returns true if x should come before y
+class MiniHeap<T> {
+  private data: T[] = [];
+  constructor(private less: (x: T, y: T) => boolean) {}
+
+  size(): number { return this.data.length; }
+  peek(): T | undefined { return this.data[0]; }
+
+  push(x: T): void {
+    const a = this.data;
+    a.push(x);
+    let i = a.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (!this.less(a[i], a[p])) break;
+      [a[i], a[p]] = [a[p], a[i]];
+      i = p;
     }
-    private swap(i: number, j: number) {
-        const t = this.heap[i];
-        this.heap[i] = this.heap[j];
-        this.heap[j] = t;
+  }
+
+  pop(): T | undefined {
+    const a = this.data;
+    if (a.length === 0) return undefined;
+    const top = a[0];
+    const last = a.pop()!;
+    if (a.length > 0) {
+      a[0] = last;
+      this.siftDown(0);
     }
-    private siftUp(i: number) {
-        let parent = Math.floor((i - 1) / 2);
-        while (i > 0 && this.comp(this.heap[i], this.heap[parent])) {
-            this.swap(i, parent);
-            i = parent;
-            parent = Math.floor((i - 1) / 2);
-        }
+    return top;
+  }
+
+  private siftDown(i: number): void {
+    const a = this.data;
+    const n = a.length;
+    while (true) {
+      let l = i * 2 + 1;
+      if (l >= n) break;
+      let r = l + 1;
+      let best = l;
+      if (r < n && this.less(a[r], a[l])) best = r;
+      if (!this.less(a[best], a[i])) break;
+      [a[i], a[best]] = [a[best], a[i]];
+      i = best;
     }
-    private siftDown(i: number) {
-        const n = this.heap.length;
-        while (2 * i + 1 < n) {
-            let j = 2 * i + 1;
-            if (j + 1 < n && this.comp(this.heap[j + 1], this.heap[j])) j += 1;
-            if (this.comp(this.heap[j], this.heap[i])) {
-                this.swap(i, j);
-                i = j;
-            } else {
-                break;
-            }
-        }
-    }
-    push(val: T) {
-        this.heap.push(val);
-        this.siftUp(this.heap.length - 1);
-    }
-    pop(): T | undefined {
-        if (this.heap.length === 0) return undefined;
-        const result = this.heap[0];
-        const last = this.heap.pop()!;
-        if (this.heap.length > 0) {
-            this.heap[0] = last;
-            this.siftDown(0);
-        }
-        return result;
-    }
-    peek(): T | undefined {
-        return this.heap[0];
-    }
-    size(): number {
-        return this.heap.length;
-    }
-    isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
+  }
 }
 
-
-// ------------------- Main Solution Function -----------------
 function mostBooked(n: number, meetings: number[][]): number {
-    // Sort meetings in order of start time (ascending)
-    meetings.sort((a, b) => a[0] - b[0]);
+  // Sort by original start time (unique starts)
+  meetings.sort((a, b) => a[0] - b[0]);
 
-    // Min-heap of available rooms by room number
-    const freeRooms = new MinHeap<number>((a, b) => a < b, Array.from({length: n}, (_,i) => i));
+  // available rooms by smallest index
+  const available = new MiniHeap<number>((a, b) => a < b);
+  for (let i = 0; i < n; i++) available.push(i);
 
-    // Min-heap of ongoing meetings: [endTime, roomId]
-    const busyRooms = new MinHeap<[number, number]>(
-        (a, b) => a[0] < b[0] || (a[0] === b[0] && a[1] < b[1])
-    );
+  // busy rooms by earliest end time, tie -> smallest room index
+  // store [endTime, roomIndex]
+  const busy = new MiniHeap<[number, number]>((x, y) => {
+    if (x[0] !== y[0]) return x[0] < y[0];
+    return x[1] < y[1];
+  });
 
-    // Count: meetings held by each room
-    const count = Array(n).fill(0);
+  const cnt = new Array<number>(n).fill(0);
 
-    for (const [start, end] of meetings) {
-        // Free rooms whose meetings just ended before this meeting's start
-        while (!busyRooms.isEmpty() && busyRooms.peek()![0] <= start) {
-            const [, room] = busyRooms.pop()!;
-            freeRooms.push(room);
-        }
+  for (const [start, end] of meetings) {
+    const duration = end - start;
 
-        if (!freeRooms.isEmpty()) {
-            // Pick the available room with the lowest number
-            const room = freeRooms.pop()!;
-            count[room]++;
-            // Mark this room as busy until the current meeting's end time
-            busyRooms.push([end, room]);
-        } else {
-            // All rooms are busy, must delay this meeting:
-            // Find the earliest room that gets free
-            const [earliestEnd, room] = busyRooms.pop()!;
-            // Delay the meeting, so it starts at earliestEnd
-            const duration = end - start;
-            const newEnd = earliestEnd + duration; // starts at earliestEnd, runs for 'duration'
-            count[room]++;
-            busyRooms.push([newEnd, room]);
-        }
+    // Free rooms that have finished by 'start'
+    while (busy.size() > 0) {
+      const top = busy.peek()!;
+      if (top[0] > start) break;
+      busy.pop();
+      available.push(top[1]);
     }
 
-    // Find the room used most
-    let max = -1, ans = 0;
-    for (let i = 0; i < n; ++i) {
-        if (count[i] > max) {
-            max = count[i];
-            ans = i;
-        }
+    if (available.size() > 0) {
+      // Use lowest-numbered available room
+      const room = available.pop()!;
+      cnt[room]++;
+      busy.push([end, room]);
+    } else {
+      // No room free: delay to earliest end time
+      const [freeTime, room] = busy.pop()!;
+      cnt[room]++;
+      // Meeting starts at freeTime, ends at freeTime + duration
+      busy.push([freeTime + duration, room]);
     }
-    return ans;
+  }
+
+  // Find room with max meetings, tie -> smallest index
+  let bestRoom = 0;
+  for (let i = 1; i < n; i++) {
+    if (cnt[i] > cnt[bestRoom]) bestRoom = i;
+  }
+  return bestRoom;
 }
 
+// Console.log-based test cases
+// ----------------------------
+// Known sample where the answer is 0
+console.log(
+  "Example 1 (Expected 0):",
+  mostBooked(2, [
+    [0, 10],
+    [1, 5],
+    [2, 7],
+    [3, 4],
+  ])
+);
 
-// ------------- IOCE Examples and Additional Test Cases --------------
+// Additional examples (outputs shown for inspection)
+console.log(
+  "Example 2:",
+  mostBooked(3, [
+    [1, 20],
+    [2, 10],
+    [3, 5],
+    [4, 9],
+    [6, 8],
+  ])
+);
 
-// EXAMPLE 1
-console.log(mostBooked(2, [[0,10],[1,5],[2,7],[3,4]])); // Output: 0
+console.log(
+  "Example 3:",
+  mostBooked(2, [
+    [0, 10],
+    [1, 2],
+    [12, 14],
+    [13, 15],
+  ])
+);
 
-// EXAMPLE 2
-console.log(mostBooked(3, [[1,20],[2,10],[3,5],[4,9],[6,8]])); // Output: 1
+// Edge case: all meetings start at the same time
+console.log(
+  "Edge Case (all same start):",
+  mostBooked(3, [
+    [0, 10],
+    [0, 10],
+    [0, 10],
+    [0, 10],
+  ])
+);
 
-// EDGE: 1 room, lots of overlapping meetings
-console.log(mostBooked(1, [[0,2],[1,4],[3,6]])); // Output: 0
+// Tie-break when counts equal across rooms: expect smallest index (0)
+console.log(
+  "Tie-break equal counts (Expected 0):",
+  mostBooked(2, [
+    [0, 1],
+    [0, 1],
+    [1, 2],
+    [1, 2],
+  ])
+);
 
-// EDGE: Each meeting can fit in its own room
-console.log(mostBooked(3, [[0,1],[2,3],[4,5]])); // Output: 0
+// Zero-duration meetings handled consistently
+console.log(
+  "Zero-duration meetings:",
+  mostBooked(1, [
+    [5, 5],
+    [5, 5],
+    [5, 5],
+  ])
+);
 
-// EDGE: later rooms get used more
-console.log(mostBooked(3, [[0,5],[0,5],[0,5],[0,5],[0,5]])); // Output: 0
+// Heavy overlaps causing delays on a single room
+console.log(
+  "Heavy overlaps single room:",
+  mostBooked(1, [
+    [0, 10],
+    [1, 3],
+    [2, 6],
+    [7, 8],
+  ])
+);
 
-/*
-
-Output:
-0
-1
-0
-0
-0
-
-*/
-
-// ------------------ End of Solution -------------------
+// Multiple rooms with staggered meetings
+console.log(
+  "Staggered with 5 rooms:",
+  mostBooked(5, [
+    [0, 2],
+    [1, 3],
+    [2, 4],
+    [3, 5],
+    [4, 6],
+    [5, 7],
+    [6, 8],
+    [7, 9],
+    [8, 10],
+  ])
+);
