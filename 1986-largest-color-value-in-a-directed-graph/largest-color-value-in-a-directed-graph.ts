@@ -1,3 +1,15 @@
+
+/**
+ * IOCE:
+ * I: `colors` as a lowercase string of length n (nodes 0..n-1),
+ *    `edges` as directed pairs [u, v] with 0 <= u, v < n.
+ * O: The maximum count of any single color along a path; return -1 if the graph contains a cycle.
+ * C: Time ~ O(n + 26 * m) where m = edges.length (constant 26 letters), Space ~ O(n * 26 + m).
+ * E: Cycles (self-loops or longer cycles) -> -1; multiple sources; disconnected graphs;
+ *    all same color; single node; large sparse graphs.
+ */
+
+
 function largestPathValue(colors: string, edges: number[][]): number {
     const n = colors.length;
     const adj: number[][] = Array.from({ length: n }, () => []);
@@ -48,3 +60,55 @@ function largestPathValue(colors: string, edges: number[][]): number {
     // If not all nodes are visited, a cycle exists.
     return visited === n ? answer : -1;
 }
+
+// ---- Pretty Graph Test Logger ----
+function buildAdjList(n: number, edges: number[][]): number[][] {
+    const adj: number[][] = Array.from({ length: n }, () => []);
+    for (const [u, v] of edges) adj[u].push(v);
+    for (const a of adj) a.sort((x, y) => x - y);
+    return adj;
+}
+
+function formatAdj(adj: number[][]): string {
+    const lines: string[] = [];
+    const width = Math.max(...adj.map((_, i) => String(i).length), 1);
+    for (let i = 0; i < adj.length; i++) {
+        const node = String(i).padStart(width, ' ');
+        lines.push(`${node} -> [${adj[i].join(', ')}]`);
+    }
+    return lines.join('\n');
+}
+
+function printGraphCase(name: string, colors: string, edges: number[][], expected: number) {
+    const n = colors.length;
+    const got = largestPathValue(colors, edges);
+    const pass = got === expected;
+    const adj = buildAdjList(n, edges);
+    const header = `\n=== ${name} ===`;
+    const meta = `nodes=${n} colors="${colors}"`;
+    const graph = formatAdj(adj);
+    const status = pass ? 'PASS ✅' : `FAIL ❌ (got=${got})`;
+    console.log(`${header}\n${meta}\n${graph}\nexpected=${expected}  ${status}`);
+}
+
+// ---- Testcases ----
+printGraphCase(
+    'Example 1 (DAG)',
+    'abaca',
+    [[0, 1], [0, 2], [2, 3], [3, 4]],
+    3
+);
+
+printGraphCase(
+    'Example 2 (Cycle)',
+    'a',
+    [[0, 0]],
+    -1
+);
+
+printGraphCase(
+    'Multiple colors path',
+    'zzzz',
+    [[0, 1], [1, 2], [2, 3]],
+    4
+);
