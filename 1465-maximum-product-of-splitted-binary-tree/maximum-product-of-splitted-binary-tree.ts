@@ -12,21 +12,9 @@
  *      product = s * (totalSum - s)
  *    Track the maximum product BEFORE modulo.
  *
- * Important:
  * - Use BigInt for sums/products to avoid precision issues in JS number.
  * - Maximize before taking modulo.
  */
-
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
-    this.val = val ?? 0;
-    this.left = left ?? null;
-    this.right = right ?? null;
-  }
-}
 
 function maxProduct(root: TreeNode | null): number {
   const MOD = 1000000007n;
